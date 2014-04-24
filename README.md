@@ -15,7 +15,7 @@ sudo dokku plugins-install
 Show current setting
 ```bash
 debug
-´´´
+```
 
 Activate tracing
 ```bash
