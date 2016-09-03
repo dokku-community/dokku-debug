@@ -58,7 +58,7 @@ help_list
       help_content_func
     else
       cat<<help_desc
-    $PLUGIN_COMMAND_PREFIX, Plugin to issue docker commands directly
+    $PLUGIN_COMMAND_PREFIX, Plugin for managing trace mode
 help_desc
     fi
     ;;
