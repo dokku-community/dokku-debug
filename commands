@@ -1,50 +1,69 @@
 #!/usr/bin/env bash
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/config"
+[[ " help $PLUGIN_COMMAND_PREFIX:help " == *" $1 "* ]] || [[ "$1" == "$PLUGIN_COMMAND_PREFIX:"* ]] || exit "$DOKKU_NOT_IMPLEMENTED_EXIT"
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
-OLDIFS="$IFS"
-IFS=" "
-SUBCOMMAND="$1"
-DOKKURC=${DOKKURC:="/home/dokku/dokkurc"}
-DOKKURC_LINE=${DOKKURC_LINE:="export DOKKU_TRACE=1"}
-
-if [ $# -lt 1 ] && [ "$1" != "help" ]
-then
-  SUBCOMMAND=help
-fi
+source "$PLUGIN_BASE_PATH/common/functions"
 
 case "$SUBCOMMAND" in
   debug)
-    if ! [ -f "$DOKKURC" ] ; then
-      echo Tracing is disabled.
-    elif grep "$DOKKURC_LINE" "$DOKKURC"  ; then
-      echo Tracing is enabled.
-    else
-      echo Tracing is disabled.
-    fi
+    "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/subcommands/default" "$@"
     ;;
-  debug:on)
-    echo "$DOKKURC_LINE" >> "$DOKKURC"
-    ;;
+
   debug:off)
-    TMPFILE=$(mktemp)
-    (grep -v "$DOKKURC_LINE" "$DOKKURC" > "$TMPFILE") || true
-    mv "$TMPFILE" "$DOKKURC"
+    "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/subcommands/off" "$@"
     ;;
+
+  debug:on)
+    "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/subcommands/on" "$@"
+    ;;
+
   debug:toggle)
-    if [ "$0" debug | grep -i enabled ] ; then
-      "$0" debug:on
+    "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/subcommands/toggle" "$@"
+    ;;
+
+  help | $PLUGIN_COMMAND_PREFIX:help)
+    help_content_func() {
+      # shellcheck disable=SC2034
+      declare desc="return $PLUGIN_COMMAND_PREFIX plugin help content"
+      cat<<help_content
+    $PLUGIN_COMMAND_PREFIX, displays the current trace status
+    $PLUGIN_COMMAND_PREFIX:on, activate trace mode
+    $PLUGIN_COMMAND_PREFIX:off, deactivate trace mode
+    $PLUGIN_COMMAND_PREFIX:toggle, toggle trace mode
+help_content
+    }
+
+    help_list_func() {
+      # shellcheck disable=SC2034
+      declare desc="return $PLUGIN_COMMAND_PREFIX plugin help content"
+      cat<<help_list
+-----> Enabling dokku trace
+help_list
+    }
+
+    if [[ $1 = "$PLUGIN_COMMAND_PREFIX:help" ]] ; then
+      echo -e "Usage: dokku $PLUGIN_COMMAND_PREFIX[:COMMAND]"
+      echo ''
+      echo "Manages dokku trace mode"
+      echo ''
+      echo 'Example:'
+      echo ''
+      echo "\$ dokku $PLUGIN_COMMAND_PREFIX:on"
+      help_list_func
+      echo ''
+      echo 'Additional commands:'
+      help_content_func | sort | column -c2 -t -s,
+    elif [[ $(ps -o command= $PPID) == *"--all"* ]]; then
+      help_content_func
     else
-      "$0" debug:off
+      cat<<help_desc
+    $PLUGIN_COMMAND_PREFIX, Plugin to issue docker commands directly
+help_desc
     fi
     ;;
-  help)
-   cat && cat<<EOF
-    debug                                           show current setting
-    debug:on                                        activate tracing
-    debug:off                                       deactivate tracing
-    debug:toggle                                    toggle tracing
-EOF
+
+  *)
+    exit "$DOKKU_NOT_IMPLEMENTED_EXIT"
     ;;
 esac
-
-IFS="$OLDIFS"

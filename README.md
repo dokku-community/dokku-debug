@@ -1,13 +1,26 @@
-# dokku-debug
+# dokku-debug [![Build Status](https://img.shields.io/travis/josegonzalez/dokku-debug.svg?branch=master "Build Status")](https://travis-ci.org/josegonzalez/dokku-debug)
 
-Toggle tracing etc.
+Manage dokku trace mode
+
+## requirements
+
+- dokku 0.4.0+
+- docker 1.8.x
 
 ## Installation
 
 ```bash
-cd /var/lib/dokku/plugins
-sudo git clone git@github.com:heichblatt/dokku-debug.git debug
-sudo dokku plugins-install
+# on 0.4.x
+dokku plugin:install https://github.com/josegonzalez/dokku-debug.git debug
+```
+
+## commands
+
+```shell
+dokku debug            Displays the current trace status
+dokku debug:off        Deactivate trace mode
+dokku debug:on         Activate trace mode
+dokku debug:toggle     Toggle trace mode
 ```
 
 ## Usage

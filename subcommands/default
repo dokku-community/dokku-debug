@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+source "$PLUGIN_CORE_AVAILABLE_PATH/common/functions"
+
+debug-main-cmd() {
+  declare desc="displays the current trace status"
+  local cmd="debug"
+  [[ "$1" == "$cmd" ]] && shift 1
+
+  [[ -d $DOKKU_ROOT/.dokkurc ]] || mkdir -p "$DOKKU_ROOT/.dokkurc"
+
+  if [[ -f "$DOKKU_ROOT/.dokkurc/DOKKU_TRACE" ]]; then
+    dokku_log_info1 "Trace mode enabled"
+  else
+    dokku_log_info1 "Trace mode disabled"
+  fi
+}
+
+debug-main-cmd "$@"
