@@ -1,4 +1,4 @@
-# dokku-debug [![Build Status](https://img.shields.io/travis/josegonzalez/dokku-debug.svg?branch=master "Build Status")](https://travis-ci.org/josegonzalez/dokku-debug)
+# dokku-debug [![Build Status](https://img.shields.io/travis/dokku-community/dokku-debug.svg?branch=master "Build Status")](https://travis-ci.org/josegonzalez/dokku-debug)
 
 Manage dokku trace mode
 
