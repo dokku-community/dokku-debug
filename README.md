@@ -26,21 +26,25 @@ dokku debug:toggle     Toggle trace mode
 ## Usage
 
 Show current setting
+
 ```bash
 debug
 ```
 
 Activate tracing
+
 ```bash
 debug on
 ```
 
 Deactivate tracing
+
 ```bash
 debug off
 ```
 
 Toggle tracing
+
 ```bash
 debug toggle
 ```
